@@ -1,0 +1,6 @@
+pytest
+coverage
+black[jupyter]
+
+Flask
+psycopg2

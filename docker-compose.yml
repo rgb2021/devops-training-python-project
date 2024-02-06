@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  app:
+    image: flask-app:0.0.1
+    container_name: my-flask-app-dc
+    restart: unless-stopped
+    networks:
+      - scalian_training
+    environment:
+      DB_USER: root
+      DB_PWD: rootpwd
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: knights
+    depends_on:
+      - db
+    ports:
+      - "5001:5000"
+
+  
+  db:
+    image: postgres:16-alpine
+    container_name: my-flask-app-db
+    restart: always
+    ports:
+      - "32000:5432"
+    environment:
+      POSTGRES_PASSWORD: rootpwd
+      POSTGRES_USER: root
+      POSTGRES_DB: knights
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      scalian_training:
+
+networks:
+  scalian_training:
+    driver: bridge
+  
+volumes:
+  dbdata:
