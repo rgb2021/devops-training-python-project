@@ -58,3 +58,6 @@ $ docker-compose down
 $ docker volume rm devops-training-python-project_dbdata 
 ```
 ![](img/composeDown.png)
+
+![](img/volumenRm.png)
+
