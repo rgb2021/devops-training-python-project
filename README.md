@@ -30,6 +30,7 @@ $ docker login --username contrerasadr --password ****
  username: contrerasadr
  password: ******
 ```
+![](img/dockerLogin.png)
 
 ## Subir imágen docker de la app a Docker Hub
 ```bash
@@ -47,6 +48,9 @@ $ docker tag
 $ docker push contrerasadr/scalian_training/my-flask-app:0.0.1
 ```
 ![](img/dockerTag.png)
+
+![](img/dockerhub.png)
+
 
 ## Clear
 ```bash
