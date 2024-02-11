@@ -25,6 +25,7 @@ $ curl localhost:5001
 $ docker login --username contrerasadr --password ****
  username: contrerasadr
  password: ******
+```
 
 ## Subir imágen docker de la app a Docker Hub
 ```bash
@@ -34,7 +35,7 @@ $ docker push contrerasadr/devops-training-flask-app:0.0.1
 
 
 
-
+```
 $ cat ~/.docker/config.json 
 ```
 
@@ -47,5 +48,7 @@ $ docker push contrerasadr/scalian_training/my-flask-app:0.0.1
 ## Clear
 ```bash
 $ docker-compose down 
-$ docker volume rm python-app-project_dbdata 
+$ docker volume rm devops-training-python-project_dbdata 
 ```
+
+#
