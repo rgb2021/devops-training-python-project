@@ -6,6 +6,7 @@
 docker-compose up -d db
 docker logs my-flask-app-db
 ```
+![](img/dockerCompose.png)
 
 ## Build Image
 ```bash
@@ -13,12 +14,15 @@ $ VERSION=0.0.1
 $ docker build -t flask-app:$VERSION .
 $ docker-compose up -d app
 ```
+![](img/dockerBuild.png)
+![](img/dockerCompose2.png)
 
 
 ## Create Docker container and test app
 ```bash
 $ curl localhost:5001
 ```
+![](img/curl.png)
 
 ## DockerHub Login 
 ```bash
@@ -33,8 +37,6 @@ $ docker tag flask-app:0.0.1 contrerasadr/devops-training-flask-app:0.0.1
 $ docker push contrerasadr/devops-training-flask-app:0.0.1
 ```
 
-
-
 ```
 $ cat ~/.docker/config.json 
 ```
@@ -44,11 +46,11 @@ $ cat ~/.docker/config.json
 $ docker tag 
 $ docker push contrerasadr/scalian_training/my-flask-app:0.0.1
 ```
+![](img/dockerTag.png)
 
 ## Clear
 ```bash
 $ docker-compose down 
 $ docker volume rm devops-training-python-project_dbdata 
 ```
-
-#
+![](img/composeDown.png)
