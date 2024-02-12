@@ -58,17 +58,19 @@ pipeline {
                 not { branch 'master' }
                 expression { params.integrationTest == true }
             }
-            script {
-                def response = sh(script: 'curl -XPOST -sLI -w "%{http_code}" http://localhost:5001 -o /dev/null', returnStdout: true)
-                if (response != null) {
-                    def statusCode = response.trim()
-                    echo "HTTP status code: $statusCode"
-                    // Now you can take different actions based on the status code
-                    if (statusCode != '200' && statusCode != '201') {
-                        error("Returned status code = $statusCode when calling $url")
+            steps {
+                script {
+                    def response = sh script: 'curl -XPOST -sLI -w "%{http_code}" http://localhost:5001 -o /dev/null', returnStdout: true
+                    if (response != null) {
+                        def statusCode = response.trim()
+                        echo "HTTP status code: $statusCode"
+                        // Now you can take different actions based on the status code
+                        if (statusCode != '200' && statusCode != '201') {
+                            error("Returned status code = $statusCode when calling $url")
+                        }
+                    } else {
+                        error("Failed to retrieve response from curl command.")
                     }
-                } else {
-                    error("Failed to retrieve response from curl command.")
                 }
             }
         }
