@@ -2,10 +2,10 @@ version: "3.7"
 
 services:
   app:
-    image: devops-training-flask-app:0.0.1
-    # build: 
-    #   context: .
-    #   dockerfile: Dockerfile
+    #image: devops-training-flask-app:0.0.1
+    build: 
+      context: .
+      dockerfile: Dockerfile
     container_name: my-flask-app-dc
     restart: unless-stopped
     networks:
