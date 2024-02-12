@@ -29,6 +29,7 @@ pipeline {
       	sh 'pip install -r requirements.txt && pytest -v  -l --tb=short --maxfail=1 tests/'
       }
     }
+  }
 
   post {
     always  {
