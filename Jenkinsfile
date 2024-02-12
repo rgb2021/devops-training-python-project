@@ -21,15 +21,15 @@ pipeline {
 
      stage('Docker Build') {
         steps {
-            sh 'docker build -t python-app -f Dockerfile .'
+            sh 'docker build -t devops-training-flask-app -f Dockerfile .'
         }
     }
 
-    stage('Test') {
+    stage('Unit Test') {
       // Specifies where the entire Pipeline, or a specific stage, will execute in the Jenkins environment depending on where the agent section is placed
     	agent {
       	docker {
-        	image 'python-app'
+        	image 'devops-training-flask-app'
         }
       }
       steps {
@@ -37,11 +37,29 @@ pipeline {
       }
     }
 
+    stage('Integration Test') {
+      steps {
+        sh 'docker-compose pull'
+      	sh 'docker-compose up --build -d'
+        def response = sh(script: 'curl -XPOST -sLI -w "%{http_code}" http://localhost:5001 -o /dev/null', returnStdout: true)
+        if (response != null) {
+            def statusCode = response.trim()
+            echo "HTTP status code: $statusCode"
+            // Now you can take different actions based on the status code
+            if (statusCode != '200' && statusCode != '201') {
+                error("Returned status code = $statusCode when calling $url")
+            }
+        } else {
+            error("Failed to retrieve response from curl command.")
+        }
+      }
+    }
+
     stage('Docker Push') {
       steps {
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-      	sh 'docker tag python-app $DOCKERHUB_HOST/scalian_training_python-app:$TAG_NAME'
-        sh 'docker push $DOCKERHUB_HOST/scalian_training_python-app:$TAG_NAME'
+      	sh 'docker tag python-app $DOCKERHUB_HOST/devops-training-flask-app:$TAG_NAME'
+        sh 'docker push $DOCKERHUB_HOST/devops-training-flask-app:$TAG_NAME'
       }
     }
   }
@@ -49,6 +67,7 @@ pipeline {
   post {
     always  {
       sh 'docker logout'
+      sh 'docker-compose down --volumes'
       
     }
     success {

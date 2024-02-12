@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   app:
-    image: contrerasadr/devops-training-flask-app:0.0.1
+    image: devops-training-flask-app:0.0.1
     # build: 
     #   context: .
     #   dockerfile: Dockerfile
