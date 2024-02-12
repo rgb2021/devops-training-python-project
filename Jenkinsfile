@@ -9,7 +9,7 @@ pipeline {
     // }
 
     parameters {
-        booleanParam(name: 'IntegrationTest', defaultValue: true, description: 'Test in DEV Environment??')
+        booleanParam(name: 'integrationTest', defaultValue: true, description: 'Test in DEV Environment??')
     }
     environment {
         DOCKERHUB_CREDENTIALS=credentials('dockerhub')
@@ -43,12 +43,10 @@ pipeline {
         }
 
         stage('DEV Env. Deployment') {
-            // when {
-            //     anyOf {
-            //         branch 'develop'
-            //         parameter name: 'IntegrationTest', value: true
-            //     }
-            // }
+            when {
+                not { branch 'master' }
+                expression { params.integrationTest == true }
+            }
             steps {
                 sh 'docker-compose pull'
                 sh 'docker-compose up --build -d'
@@ -56,6 +54,10 @@ pipeline {
         } 
 
         stage('Integration Test') {
+            when {
+                not { branch 'master' }
+                expression { params.integrationTest == true }
+            }
             script {
                 def response = sh(script: 'curl -XPOST -sLI -w "%{http_code}" http://localhost:5001 -o /dev/null', returnStdout: true)
                 if (response != null) {
@@ -108,7 +110,7 @@ pipeline {
 def getLastGitTag() {
     sh "git tag --sort version:refname | head -n 1 > version.tmp"
     String tag = readFile 'version.tmp'
-    tag = tag if tag != "" else "0.0.1"
+    tag = tag != "" ? tag : "0.0.1"
     echo "Branch: ${scm.branches[0].name}"
     echo "Tag, ${tag}." 
     return tag
