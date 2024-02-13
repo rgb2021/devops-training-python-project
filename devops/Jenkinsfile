@@ -4,11 +4,35 @@ pipeline {
 
     stages {
 
-        stage('FIRST STAGE') {
+        stage('List env vars') {
             steps{
-                 sh 'echo Hello!'
+                sh "printenv | sort"
             }
         }
+
+        stage('Docker Build Test') {
+            steps {
+                sh 'docker build -t devops-training-flask-app-tests -f tests.Dockerfile .'
+            }
+        }
+        stage('Unit Test') {
+            agent {
+                docker {
+                    image 'devops-training-flask-app-tests'
+                }
+            }
+            steps {
+                sh 'pytest -v -l --tb=short --maxfail=1 tests/'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t devops-training-flask-app -f Dockerfile .'
+            }
+        }
+
+        
     }
 
     post {
