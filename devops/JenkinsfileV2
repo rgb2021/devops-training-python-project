@@ -1,0 +1,25 @@
+#!groovy
+pipeline {
+	agent any
+
+    stages {
+
+        stage('FIRST STAGE') {
+            steps{
+                 sh 'echo "Hello!'
+            }
+        }
+    }
+
+
+    post {
+        always  {
+            sh 'echo "END'            
+        }
+        success {
+            // send mail
+            echo "SUCCESS"
+        }
+    }
+  
+}
