@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build Test Docker image
-        run: docker build . --file Dockerfile --tag devops-training-flask-app-tests:latest
+        run: docker build . --file tests.Dockerfile --tag devops-training-flask-app-tests:latest
 
       - name: Unit tests
         run: docker run devops-training-flask-app-tests:latest
