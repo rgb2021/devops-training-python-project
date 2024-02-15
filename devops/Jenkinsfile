@@ -9,7 +9,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS=credentials('dockerhub-auth')
         DOCKERHUB_HOST="contrerasadr"
-        VERSION="${params.version}"
+        IMAGE_VERSION="${params.version}"
     }
 
     stages {
@@ -45,8 +45,8 @@ pipeline {
         stage('Docker Push') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'docker tag python-app $DOCKERHUB_HOST/devops-training-flask-app:$VERSION'
-                sh 'docker push $DOCKERHUB_HOST/devops-training-flask-app:$VERSION'
+                sh 'docker tag python-app $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
+                sh 'docker push $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
             }
         }
 
