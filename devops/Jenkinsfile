@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+        DOCKERHUB_CREDENTIALS=credentials('dockerhub-auth')
         DOCKERHUB_HOST="contrerasadr"
         VERSION="${params.version}"
     }
