@@ -45,8 +45,26 @@ pipeline {
         stage('Docker Push') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'docker tag python-app $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
+                sh 'docker tag devops-training-flask-app $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
                 sh 'docker push $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
+            }
+        }
+
+        stage('Deploy UAT') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Deploying to UAT'
+            }
+        }
+
+        stage('Deploy PRO') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Deploying to PRO'
             }
         }
 
