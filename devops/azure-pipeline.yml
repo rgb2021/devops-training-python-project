@@ -18,11 +18,21 @@ parameters:
       - dev
       - prod
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  - name: version
+    displayName: Version
+    type: string
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+variables:
+  - name: imageVersion
+    value: ${{ parameters.version }}
+  - group: python-app-${{ parameters.environment }}
+
+steps:
+- script: Start Building image version $(imageVersion)!
+  displayName: 'Build image for environment: ${{ parameters.environment }}'
+  
+- template: az-devops-templates\dockerhub-push.yml
+  parameters:
+    IMAGE_NAME: devops-training-python-app
+    IMAGE_VERSION:  $(imageVersion)
+  #condition: and(succeeded(), eq(${{ parameters.environment }}, "prod"))
