@@ -8,6 +8,15 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - prod
 
 steps:
 - script: echo Hello, world!
