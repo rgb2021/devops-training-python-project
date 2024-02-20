@@ -31,7 +31,7 @@ steps:
 - script: Start Building image version $(imageVersion)!
   displayName: 'Build image for environment: ${{ parameters.environment }}'
   
-- template: az-devops-templates\dockerhub-push.yml
+- template: devops/az-devops-templates/dockerhub-push.yml
   parameters:
     IMAGE_NAME: devops-training-python-app
     IMAGE_VERSION:  $(imageVersion)
