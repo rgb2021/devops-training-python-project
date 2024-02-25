@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+  
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - prod
+
+  - name: version
+    displayName: Version
+    type: string
+
+variables:
+  - name: imageVersion
+    value: ${{ parameters.version }}
+  - group: python-app-${{ parameters.environment }}
+
+steps:
+- script: Start Building image version $(imageVersion)!
+  displayName: 'Build image for environment: ${{ parameters.environment }}'
+  
+- template: devops/az-devops-templates/dockerhub-push.yml
+  parameters:
+    IMAGE_NAME: devops-training-python-app
+    IMAGE_VERSION:  $(imageVersion)
+  #condition: and(succeeded(), eq(${{ parameters.environment }}, "prod"))

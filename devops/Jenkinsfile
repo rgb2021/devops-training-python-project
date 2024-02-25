@@ -1,0 +1,84 @@
+#!groovy
+pipeline {
+	agent any
+
+    parameters {
+        string(name: 'version', defaultValue: 'latest', description: 'Docker Image Version')
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('dockerhub-auth')
+        DOCKERHUB_HOST="contrerasadr"
+        IMAGE_VERSION="${params.version}"
+    }
+
+    stages {
+
+        stage('List env vars') {
+            steps{
+                sh "printenv | sort"
+            }
+        }
+
+        stage('Docker Build Test') {
+            steps {
+                sh 'docker build -t devops-training-flask-app-tests -f tests.Dockerfile .'
+            }
+        }
+        stage('Unit Test') {
+            agent {
+                docker {
+                    image 'devops-training-flask-app-tests'
+                }
+            }
+            steps {
+                sh 'pytest -v -l --tb=short --maxfail=1 tests/'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t devops-training-flask-app -f Dockerfile .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'docker tag devops-training-flask-app $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
+                sh 'docker push $DOCKERHUB_HOST/devops-training-flask-app:$IMAGE_VERSION'
+            }
+        }
+
+        stage('Deploy UAT') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'Deploying to UAT'
+            }
+        }
+
+        stage('Deploy PRO') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Deploying to PRO'
+            }
+        }
+
+        
+    }
+
+    post {
+        always  {
+            sh 'echo END'            
+        }
+        success {
+            // send mail
+            echo "SUCCESS"
+        }
+    }
+  
+}

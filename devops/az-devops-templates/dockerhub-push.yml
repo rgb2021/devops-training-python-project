@@ -1,0 +1,22 @@
+
+parameters:
+- name: IMAGE_NAME
+  type: string
+- name: IMAGE_VERSION
+  type: string
+
+steps:
+- task: DockerInstaller@0
+  inputs:
+    dockerVersion: '17.09.0-ce'
+# - script: |
+#     docker system prune -af -y
+#     docker image prune -af -y
+#   displayName: Docker Clean
+- script: |
+    echo $(DOCKER_HUB_TOKEN) | docker login -u $(DOCKER_HUB_USER) --password-stdin
+  displayName: DockerHub login
+- script: |
+    docker tag devops-training-flask-app $(DOCKER_HUB_TOKEN)/${{parameters.IMAGE_NAME}}:${{parameters.IMAGE_VERSION}}
+    docker push  $(DOCKER_HUB_TOKEN)/${{parameters.IMAGE_NAME}}:${{parameters.IMAGE_VERSION}}
+  displayName: DockerHub Push
